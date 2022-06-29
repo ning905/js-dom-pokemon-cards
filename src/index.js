@@ -1,37 +1,62 @@
-const cardList = document.querySelector("ul");
-cardList.style.display = "grid";
-cardList.style.listStyle = "none";
-
-for (let i = 0; i < data.length; i++) {
-  const cardItem = document.createElement("li");
-  cardList.appendChild(cardItem);
-  cardItem.setAttribute("class", "card");
-
+const createCardTitle = (pokemon) => {
   const cardTitle = document.createElement("h2");
-  cardItem.appendChild(cardTitle);
-  cardTitle.setAttribute("class", "card--title");
-  cardTitle.innerText = data[i].name;
+  cardTitle.classList.add("card--title");
+  cardTitle.innerText = pokemon.name;
   cardTitle.style.textTransform = "capitalize";
+  return cardTitle;
+};
 
+const createCardImg = (pokemon) => {
   const cardImg = document.createElement("img");
-  cardItem.appendChild(cardImg);
-  cardImg.setAttribute("class", "card--img");
-  cardImg.style.width = "256px";
+  cardImg.classList.add("card--img");
+  cardImg.setAttribute("width", "256px");
   cardImg.setAttribute(
     "src",
-    data[i].sprites.other["official-artwork"].front_default
+    pokemon.sprites.other["official-artwork"].front_default
   );
+  return cardImg;
+};
 
-  const cardTxtList = document.createElement("ul");
-  cardItem.appendChild(cardTxtList);
-  cardTxtList.setAttribute("class", "card--text");
-  cardTxtList.style.listStyle = "none";
+const createCardStatText = (statName, baseStat) => {
+  const cardText = document.createElement("li");
+  cardText.innerText = statName + ": " + baseStat;
+  cardText.style.textTransform = "uppercase";
+  return cardText;
+};
 
-  for (let j = 0; j < data[i].stats.length; j++) {
-    const thisStats = data[i].stats;
-    const cardTxt = document.createElement("li");
-    cardTxtList.appendChild(cardTxt);
-    cardTxt.innerText = thisStats[j].stat.name + ": " + thisStats[j].base_stat;
-    cardTxt.style.textTransform = "uppercase";
-  }
-}
+const createCardStatList = (pokemon) => {
+  const cardStatList = document.createElement("ul");
+  cardStatList.classList.add("card--text");
+  cardStatList.style.listStyle = "none";
+
+  pokemon.stats.forEach((stat) => {
+    cardStatList.append(createCardStatText(stat.stat.name, stat.base_stat));
+  });
+
+  return cardStatList;
+};
+
+const createCardItem = (pokemon) => {
+  const cardItem = document.createElement("li");
+  cardItem.classList.add("card");
+
+  cardItem.appendChild(createCardTitle(pokemon));
+  cardItem.appendChild(createCardImg(pokemon));
+  cardItem.appendChild(createCardStatList(pokemon));
+
+  return cardItem;
+};
+
+const generateCardList = (pokemonList) => {
+  const cardList = document.querySelector("ul");
+  cardList.style.display = "grid";
+  cardList.style.listStyle = "none";
+
+  pokemonList.forEach((pokemon) => {
+    cardList.append(createCardItem(pokemon));
+  });
+
+  return cardList;
+};
+
+generateCardList(data);
