@@ -8,12 +8,30 @@ const createCardTitle = (pokemon) => {
 
 const createCardImg = (pokemon) => {
   const cardImg = document.createElement("img");
+  const defaultSrc = pokemon.sprites.other["official-artwork"].front_default;
+
+  let isDefault = true;
+  const toggleSrc = (pokemon) => {
+    if (isDefault) {
+      cardImg.setAttribute("src", defaultSrc);
+    } else {
+      cardImg.setAttribute(
+        "src",
+        pokemon.sprites.versions["generation-vii"]["ultra-sun-ultra-moon"]
+          .front_default
+      );
+    }
+  };
+
   cardImg.classList.add("card--img");
   cardImg.setAttribute("width", "256px");
-  cardImg.setAttribute(
-    "src",
-    pokemon.sprites.other["official-artwork"].front_default
-  );
+  cardImg.setAttribute("src", defaultSrc);
+  cardImg.addEventListener("click", (event) => {
+    isDefault = !isDefault;
+    console.log(cardImg.getAttribute("src"));
+    toggleSrc(pokemon);
+  });
+
   return cardImg;
 };
 
@@ -64,6 +82,7 @@ const createCardItem = (pokemon) => {
 
 const generateCardList = (pokemonList) => {
   const cardList = document.querySelector("ul");
+  cardList.innerHTML = "";
   cardList.style.listStyle = "none";
 
   pokemonList.forEach((pokemon) => {
