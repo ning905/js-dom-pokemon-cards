@@ -18,22 +18,37 @@ const createCardImg = (pokemon) => {
 };
 
 const createCardStatText = (statName, baseStat) => {
-  const cardText = document.createElement("li");
-  cardText.innerText = statName + ": " + baseStat;
-  cardText.style.textTransform = "uppercase";
-  return cardText;
+  const statText = document.createElement("li");
+  statText.innerText = statName + ": " + baseStat;
+  statText.style.textTransform = "uppercase";
+  return statText;
 };
 
-const createCardStatList = (pokemon) => {
-  const cardStatList = document.createElement("ul");
-  cardStatList.classList.add("card--text");
-  cardStatList.style.listStyle = "none";
+const createGamesAppeared = () => {
+  const gameText = document.createElement("li");
+  return gameText;
+};
+
+const createCardContentList = (pokemon) => {
+  const cardContentList = document.createElement("ul");
+  cardContentList.classList.add("card--text");
+  cardContentList.style.listStyle = "none";
 
   pokemon.stats.forEach((stat) => {
-    cardStatList.append(createCardStatText(stat.stat.name, stat.base_stat));
+    cardContentList.append(createCardStatText(stat.stat.name, stat.base_stat));
   });
 
-  return cardStatList;
+  const gameText = createGamesAppeared();
+  cardContentList.append(gameText);
+  const gameNamesArr = pokemon.game_indices.map((game) => {
+    return (
+      game.version.name.charAt(0).toUpperCase() + game.version.name.slice(1)
+    );
+  });
+  const gameNames = gameNamesArr.join(", ");
+  gameText.innerText = "APPEARED IN: " + gameNames;
+
+  return cardContentList;
 };
 
 const createCardItem = (pokemon) => {
@@ -42,14 +57,13 @@ const createCardItem = (pokemon) => {
 
   cardItem.appendChild(createCardTitle(pokemon));
   cardItem.appendChild(createCardImg(pokemon));
-  cardItem.appendChild(createCardStatList(pokemon));
+  cardItem.appendChild(createCardContentList(pokemon));
 
   return cardItem;
 };
 
 const generateCardList = (pokemonList) => {
   const cardList = document.querySelector("ul");
-  cardList.style.display = "grid";
   cardList.style.listStyle = "none";
 
   pokemonList.forEach((pokemon) => {
